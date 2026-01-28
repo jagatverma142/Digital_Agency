@@ -1,25 +1,30 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from './Components/Navbar'; // Ensure Navbar.jsx file exists here
-
-
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'; // Fixed spelling
+import Navbar from './Components/Navbar';
+import Home from './Pages/Home';
+import Services from './Pages/Services';
+import Work from './Pages/Work';
+import Team from './Pages/Team';  
+import Pricing from './Pages/Pricing';
+import Footer from './Components/Footer';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-[#0a0a0c] text-white">
-            <Navbar />
-  {/* Rest of your content */}
-      </div>
+      {/* Navbar yahan rahega taaki har page pe dikhe */}
+      <Navbar /> 
       
       <Routes>
-        {/* <Route path="/" element={<Bhupendra_verma />} /> */}
+        <Route path="/" element={<Home />} />
+        <Route path="/Services" element={<Services />} />
+        <Route path="/Work" element={<Work />} />
+        <Route path="/Team" element={<Team />} />
+        <Route path="/Pricing" element={<Pricing />} />
 
 
-        {/* Add other routes here like /projects, /contact */}
+
+        {/* Baaki routes yahan add karein */}
       </Routes>
-      {/* <Footer /> */}
-
-
+      <Footer />
     </Router>
   );
 }
