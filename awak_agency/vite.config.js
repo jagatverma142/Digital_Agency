@@ -12,4 +12,5 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  base: '/Digital_Agency/',   // 👈 base ko yahan rakho (top-level)
 })
