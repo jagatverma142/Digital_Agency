@@ -55,7 +55,7 @@ const Work = () => {
     {
       title: "Urban Space",
       category: "Branding",
-      image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?auto=format&fit=crop&q=80&w=800",
+      image: "https://th.bing.com/th/id/R.d92f83e582c995f23efcf3a5ae02fa7a?rik=LMFPXlpq%2fZmX6Q&riu=http%3a%2f%2fmedia.except.nl%2fmedia%2fcache%2fuploaded_images%2fasset_image%2fSchiebroek-Viz-Market_Full_2_pure_image.jpg&ehk=uZevpRpiE7L18aOEVRH5N39TL8xZf3wSARrZWx%2bvUHg%3d&risl=&pid=ImgRaw&r=0",
       description: "Visual identity design for a sustainable architectural firm.",
       tags: ["Figma", "Branding", "Motion"],
       metrics: { reach: "1.2M", impact: "High" },
@@ -207,10 +207,10 @@ const Work = () => {
             </div>
           </div>
           <div className="relative">
-            <div className="absolute inset-0 bg-blue-600 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
+            <div className="absolute  inset-0 bg-blue-600 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
             <img 
-              src="https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800" 
-              className="rounded-[3rem] shadow-2xl relative z-10 grayscale hover:grayscale-0 transition-all duration-700"
+              src ="https://saaslucid.com/wp-content/uploads/2024/07/optimizing_saas_content_roi.jpg" 
+              className="rounded-[3rem] cover h-100 shadow-2xl relative z-10   transition-all duration-700"
               alt="Data Analytics"
             />
           </div>

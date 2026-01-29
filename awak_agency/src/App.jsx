@@ -7,6 +7,9 @@ import Work from './Pages/Work';
 import Team from './Pages/Team';  
 import Pricing from './Pages/Pricing';
 import Footer from './Components/Footer';
+import { LogIn } from 'lucide-react';
+import Register from './Pages/Register';
+import Login from './Pages/Login';
 function App() {
   return (
     <Router>
@@ -19,6 +22,8 @@ function App() {
         <Route path="/Work" element={<Work />} />
         <Route path="/Team" element={<Team />} />
         <Route path="/Pricing" element={<Pricing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
 
 
 

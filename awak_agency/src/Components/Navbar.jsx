@@ -1,89 +1,158 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom'; // Added Link and useLocation
+import { Menu, X, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation(); // Current path check karne ke liye
+  const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Updated Links to match your App.jsx routes
   const navLinks = [
-    { name: 'About us', path: '/' },
+    { name: 'About', path: '/' },
     { name: 'Services', path: '/Services' },
     { name: 'Work', path: '/Work' },
     { name: 'Team', path: '/Team' },
     { name: 'Pricing', path: '/Pricing' },
   ];
 
+  // Variants for staggered mobile menu
+  const menuVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: -20 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 }
+  };
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white/80 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group cursor-pointer">
-          <div className="w-8 h-8 bg-black rounded-full group-hover:rotate-45 transition-transform duration-500" />
-          <span className="text-xl font-bold tracking-tighter uppercase">AWAKE</span>
+    <div className="fixed w-full z-[100] px-4 sm:px-8 py-6">
+      <motion.nav 
+        animate={{
+          y: isScrolled ? 0 : 0,
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.7)" : "rgba(255, 255, 255, 0)",
+          backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
+          borderRadius: isScrolled ? "100px" : "0px",
+          padding: isScrolled ? "12px 24px" : "0px 0px",
+          border: isScrolled ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid rgba(255, 255, 255, 0)"
+        }}
+        className="max-w-7xl mx-auto flex justify-between items-center transition-all duration-500 ease-in-out"
+      >
+        {/* --- Logo with Glow Effect --- */}
+        <Link to="/" className="relative group flex items-center gap-2">
+          <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
+          <motion.div 
+            whileHover={{ rotate: 180 }}
+            className="w-9 h-9 bg-black flex items-center justify-center rounded-xl shadow-xl"
+          >
+            <Sparkles className="text-white w-5 h-5" />
+          </motion.div>
+          <span className="text-2xl font-black tracking-[ -0.05em] text-black">
+            AWAKE<span className="text-blue-600 italic">!</span>
+          </span>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              to={link.path} 
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === link.path ? 'text-black font-bold' : 'text-gray-600 hover:text-black'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-4">
-          <button className="hidden sm:block text-sm font-semibold">Sign In</button>
-          <button className="bg-black text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all">
-            Sign Up
-          </button>
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
-            {isOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-white border-t p-6 md:hidden flex flex-col gap-4 shadow-xl"
-          >
-            {navLinks.map((link) => (
+        {/* --- Floating Desktop Menu --- */}
+        <div className="hidden md:flex items-center bg-black/5 rounded-full px-2 py-1 border border-black/5">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
               <Link 
                 key={link.name} 
                 to={link.path} 
-                className="text-lg font-bold" 
-                onClick={() => setIsOpen(false)}
+                className={`relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                  isActive ? 'text-white' : 'text-gray-500 hover:text-black'
+                }`}
               >
+                {isActive && (
+                  <motion.div 
+                    layoutId="activeTab" 
+                    className="absolute inset-0 bg-black rounded-full -z-10 shadow-lg shadow-black/20" 
+                  />
+                )}
                 {link.name}
               </Link>
-            ))}
+            );
+          })}
+        </div>
+
+        {/* --- Call to Action --- */}
+        <div className="flex items-center gap-3">
+          <Link to="/login" className="hidden lg:block text-xs font-bold uppercase tracking-widest hover:text-blue-600 transition-colors mr-4">
+            Login
+          </Link>
+
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link 
+              to="/signup" 
+              className="relative overflow-hidden group bg-black text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-[0.1em] flex items-center gap-2 border border-black shadow-[0_10px_20px_rgba(0,0,0,0.15)]"
+            >
+              <span className="relative z-10">Join Now</span>
+              <ArrowUpRight className ="w-4 h-4 group-hover:rotate-45 transition-transform duration-300" />
+              {/* Animated Gradient Background on Hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            </Link>
+          </motion.div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            onClick={() => setIsOpen(!isOpen)} 
+            className="md:hidden w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* --- Fullscreen Overlay Mobile Menu --- */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[-1] flex flex-col items-center justify-center md:hidden"
+          >
+            <motion.div 
+              variants={menuVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col items-center gap-8"
+            >
+              {navLinks.map((link) => (
+                <motion.div key={link.name} variants={itemVariants}>
+                  <Link 
+                    to={link.path} 
+                    onClick={() => setIsOpen(false)}
+                    className="text-5xl font-black text-white/50 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+              
+              <motion.div variants={itemVariants} className="flex gap-6 mt-8">
+                <Link to="/login" className="text-white text-lg font-bold border-b-2 border-white/20">Sign In</Link>
+                <Link to="/signup" className="bg-white text-black px-8 py-3 rounded-full font-bold">Sign Up</Link>
+              </motion.div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </div>
   );
 };
 
