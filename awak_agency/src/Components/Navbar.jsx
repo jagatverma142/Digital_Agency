@@ -14,6 +14,15 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
   const navLinks = [
     { name: 'About', path: '/' },
     { name: 'Services', path: '/Services' },
@@ -22,7 +31,6 @@ const Navbar = () => {
     { name: 'Pricing', path: '/Pricing' },
   ];
 
-  // Variants for staggered mobile menu
   const menuVariants = {
     hidden: { opacity: 0, scale: 0.95, y: -20 },
     visible: { 
@@ -39,20 +47,21 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed w-full z-[100] px-4 sm:px-8 py-6">
+    <div className="fixed top-0 left-0 w-full z-[100] px-4 sm:px-8 py-6">
       <motion.nav 
         animate={{
           y: isScrolled ? 0 : 0,
-          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.7)" : "rgba(255, 255, 255, 0)",
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0)",
           backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
           borderRadius: isScrolled ? "100px" : "0px",
-          padding: isScrolled ? "12px 24px" : "0px 0px",
+          padding: isScrolled ? "10px 24px" : "0px 0px",
           border: isScrolled ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid rgba(255, 255, 255, 0)"
         }}
-        className="max-w-7xl mx-auto flex justify-between items-center transition-all duration-500 ease-in-out"
+        // ADDED: relative and z-50 to ensure the header stays ABOVE the mobile menu overlay
+        className="relative z-50 max-w-7xl mx-auto flex justify-between items-center transition-all duration-500 ease-in-out"
       >
-        {/* --- Logo with Glow Effect --- */}
-        <Link to="/" className="relative group flex items-center gap-2">
+        {/* --- Logo --- */}
+        <Link to="/" className="relative group flex items-center gap-2" onClick={() => setIsOpen(false)}>
           <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
           <motion.div 
             whileHover={{ rotate: 180 }}
@@ -60,7 +69,7 @@ const Navbar = () => {
           >
             <Sparkles className="text-white w-5 h-5" />
           </motion.div>
-          <span className="text-2xl font-black tracking-[ -0.05em] text-black">
+          <span className="text-xl sm:text-2xl font-black tracking-[ -0.05em] text-black">
             AWAKE<span className="text-blue-600 italic">!</span>
           </span>
         </Link>
@@ -73,7 +82,7 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 to={link.path} 
-                className={`relative px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                className={`relative px-4 lg:px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
                   isActive ? 'text-white' : 'text-gray-500 hover:text-black'
                 }`}
               >
@@ -89,30 +98,29 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* --- Call to Action --- */}
+        {/* --- Call to Action & Mobile Toggle --- */}
         <div className="flex items-center gap-3">
           <Link to="/login" className="hidden lg:block text-xs font-bold uppercase tracking-widest hover:text-blue-600 transition-colors mr-4">
             Login
           </Link>
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="hidden sm:block">
             <Link 
               to="/signup" 
-              className="relative overflow-hidden group bg-black text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-[0.1em] flex items-center gap-2 border border-black shadow-[0_10px_20px_rgba(0,0,0,0.15)]"
+              className="relative overflow-hidden group bg-black text-white px-6 sm:px-8 py-3 rounded-full text-xs font-bold uppercase tracking-[0.1em] flex items-center gap-2 border border-black shadow-[0_10px_20px_rgba(0,0,0,0.15)]"
             >
               <span className="relative z-10">Join Now</span>
               <ArrowUpRight className ="w-4 h-4 group-hover:rotate-45 transition-transform duration-300" />
-              {/* Animated Gradient Background on Hover */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             </Link>
           </motion.div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Toggle Button */}
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="md:hidden w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            className="md:hidden w-11 h-11 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors z-50"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </motion.nav>
@@ -124,29 +132,42 @@ const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[-1] flex flex-col items-center justify-center md:hidden"
+            // FIX: Changed z-index from -1 to 40. Now it sits ON TOP of content but BELOW the nav bar buttons (z-50)
+            className="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[40] flex flex-col items-center justify-center md:hidden"
           >
             <motion.div 
               variants={menuVariants}
               initial="hidden"
               animate="visible"
-              className="flex flex-col items-center gap-8"
+              className="flex flex-col items-center gap-8 p-4 text-center"
             >
               {navLinks.map((link) => (
                 <motion.div key={link.name} variants={itemVariants}>
                   <Link 
                     to={link.path} 
                     onClick={() => setIsOpen(false)}
-                    className="text-5xl font-black text-white/50 hover:text-white transition-colors"
+                    className="text-4xl sm:text-5xl font-black text-white/50 hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
                 </motion.div>
               ))}
               
-              <motion.div variants={itemVariants} className="flex gap-6 mt-8">
-                <Link to="/login" className="text-white text-lg font-bold border-b-2 border-white/20">Sign In</Link>
-                <Link to="/signup" className="bg-white text-black px-8 py-3 rounded-full font-bold">Sign Up</Link>
+              <motion.div variants={itemVariants} className="flex flex-col gap-4 mt-8 w-full">
+                <Link 
+                    to="/login" 
+                    onClick={() => setIsOpen(false)}
+                    className="text-white text-lg font-bold py-2"
+                >
+                    Sign In
+                </Link>
+                <Link 
+                    to="/signup" 
+                    onClick={() => setIsOpen(false)}
+                    className="bg-white text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm"
+                >
+                    Join Now
+                </Link>
               </motion.div>
             </motion.div>
           </motion.div>
